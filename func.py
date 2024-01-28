@@ -11,6 +11,7 @@ def kst_now():
     minute = datetime.now(timezone('Asia/Seoul')).strftime('%M')
     second = datetime.now(timezone('Asia/Seoul')).strftime('%S')
     return {
+        "success": True,
         "all": all,
         "year": year,
         "month": month,
@@ -19,4 +20,3 @@ def kst_now():
         "minute": minute,
         "second": second,
     }
-
