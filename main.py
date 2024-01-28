@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 import func
+import requests
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -34,6 +35,14 @@ async def time():
 async def ip(request: Request, user_agent: Union[str, None] = Header(default=None)):
     client_host = request.client.host
     return {"ip": client_host, "user_agent": user_agent}
+
+@app.get("/room")
+async def room():
+    url = "http://192.168.0.12:8000/"
+    response = requests.get(url)
+    json_data = response.json()
+
+    return json_data
 
 if __name__ == "__main__":
     import uvicorn
