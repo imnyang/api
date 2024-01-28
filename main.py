@@ -46,7 +46,8 @@ async def root(request: Request):
 
 @app.get(
     "/time/{continent}/{country}",
-    description="What time is now?",
+    description="What time is now?\n/time/Asia/Seoul",
+
 )
 async def time(continent:str, country:str):
     return func.now(f"{continent}/{country}")
