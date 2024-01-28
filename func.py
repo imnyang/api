@@ -2,21 +2,17 @@ from datetime import datetime
 from pytz import timezone
 
 
-def kst_now():
-    all = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
-    year = datetime.now(timezone('Asia/Seoul')).strftime('%Y')
-    month = datetime.now(timezone('Asia/Seoul')).strftime('%m')
-    day = datetime.now(timezone('Asia/Seoul')).strftime('%d')
-    hour = datetime.now(timezone('Asia/Seoul')).strftime('%H')
-    minute = datetime.now(timezone('Asia/Seoul')).strftime('%M')
-    second = datetime.now(timezone('Asia/Seoul')).strftime('%S')
+def now(where:str):
+    time = datetime.now(timezone(where))
+
     return {
         "success": True,
-        "all": all,
-        "year": year,
-        "month": month,
-        "day": day,
-        "hour": hour,
-        "minute": minute,
-        "second": second,
+        "timestamp": time,
+        "all": time.strftime('%Y-%m-%d %H:%M:%S'),
+        "year": time.strftime('%Y'),
+        "month": time.strftime('%m'),
+        "day": time.strftime('%d'),
+        "hour": time.strftime('%H'),
+        "minute": time.strftime('%M'),
+        "second": time.strftime('%S'),
     }

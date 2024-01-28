@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Header
+from fastapi import FastAPI, Header, HTTPException
 from typing import Union
 
 from fastapi import Request
@@ -11,7 +11,20 @@ from fastapi.templating import Jinja2Templates
 import func
 import httpx
 
-app = FastAPI()
+app = FastAPI(
+    title="api.imnyang.xyz",
+    summary="imnyang's API",
+    version="0.1.0",
+    contact={
+        "name": "💕",
+        "url": "https://imnyang.xyz/about",
+        "email": "api@imnyang.xyz",
+    },
+    license_info={
+        "name": "GPL-3.0 license",
+        "url": "https://www.gnu.org/licenses/gpl-3.0.html",
+    },
+)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 app.add_middleware(
@@ -23,13 +36,20 @@ app.add_middleware(
 )
 
 
-@app.get("/")
+@app.get(
+    "/",
+    summary="Root",
+    description="api.imnyang.xyz의 메인 페이지입니다.",
+)
 async def root(request: Request):
     return templates.TemplateResponse("index.html",{"request":request})
 
-@app.get("/time/kst")
-async def time():
-    return func.kst_now()
+@app.get(
+    "/time/{continent}/{country}",
+    description="What time is now?",
+)
+async def time(continent:str, country:str):
+    return func.now(f"{continent}/{country}")
 
 @app.get("/get_client")
 async def ip(request: Request, user_agent: Union[str, None] = Header(default=None)):
