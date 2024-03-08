@@ -57,14 +57,14 @@ async def ip(request: Request, user_agent: Union[str, None] = Header(default=Non
     client_host = request.client.host
     return {"success":True, "ip": client_host, "user_agent": user_agent}
 
-@app.get("/room")
-async def room():
-    url = "http://192.168.0.12:8000/"
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url)
-        json_data = response.json()
-
-    return json_data
+#@app.get("/room")
+#async def room():
+#    url = "http://192.168.0.12:8000/"
+#    async with httpx.AsyncClient() as client:
+#        response = await client.get(url)
+#        json_data = response.json()
+#
+#    return json_data
 
 if __name__ == "__main__":
     import uvicorn
