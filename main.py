@@ -52,9 +52,16 @@ async def root(request: Request):
 async def time(continent:str, country:str, response: Response):
     result = func.now(f"{continent}/{country}")
     if result["success"] == False:
-        response.status_code = status.
+        return result
+    return result
 
-        return "asfd"
+@app.get(
+    "/cookie/coupon",
+    description="i need Cookie Run: Kingdom Coupon Code",
+    status_code=200
+)
+async def cookie_coupon(response: Response):
+    result = func.coupon_croll()
     return result
 
 @app.get("/get_client")
