@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Header, HTTPException
 from typing import Union
 
-from fastapi import Request
+from fastapi import Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi.responses import HTMLResponse
@@ -47,10 +47,15 @@ async def root(request: Request):
 @app.get(
     "/time/{continent}/{country}",
     description="What time is now?\n/time/Asia/Seoul",
-
+    status_code=200
 )
-async def time(continent:str, country:str):
-    return func.now(f"{continent}/{country}")
+async def time(continent:str, country:str, response: Response):
+    result = func.now(f"{continent}/{country}")
+    if result["success"] == False:
+        response.status_code = status.
+
+        return "asfd"
+    return result
 
 @app.get("/get_client")
 async def ip(request: Request, user_agent: Union[str, None] = Header(default=None)):

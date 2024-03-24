@@ -1,20 +1,26 @@
 from datetime import datetime
-from pytz import timezone
+from pytz import timezone, all_timezones
 
 
 def now(where:str):
-    time = datetime.now(timezone(where))
-
-    return {
-        "success": True,
-        "timestamp": time,
-        "all": time.strftime('%Y-%m-%d %H:%M:%S'),
-        "time": {
-            "year": time.strftime('%Y'),
-            "month": time.strftime('%m'),
-            "day": time.strftime('%d'),
-            "hour": time.strftime('%H'),
-            "minute": time.strftime('%M'),
-            "second": time.strftime('%S'),
-        },
-    }
+    try:
+        time = datetime.now(timezone(where))
+        print(time)
+        return {
+            "success": True,
+            "timestamp": time,
+            "all": time.strftime('%Y-%m-%d %H:%M:%S'),
+            "time": {
+                "year": time.strftime('%Y'),
+                "month": time.strftime('%m'),
+                "day": time.strftime('%d'),
+                "hour": time.strftime('%H'),
+                "minute": time.strftime('%M'),
+                "second": time.strftime('%S'),
+            },
+        }
+    except:
+        return {
+            "success": False,
+            "times": all_timezones
+        }
