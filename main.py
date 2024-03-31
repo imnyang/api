@@ -55,15 +55,22 @@ async def time(continent:str, country:str, response: Response):
         return result
     return result
 
-@app.get(
-    "/cookie/coupon",
-    description="i need Cookie Run: Kingdom Coupon Code",
-    status_code=200
-)
-async def cookie_coupon(response: Response):
-    result = func.coupon_croll()
-    return result
+#@app.get(
+#    "/cookie/coupon",
+#    description="i need Cookie Run: Kingdom Coupon Code",
+#    status_code=200
+#)
+#async def cookie_coupon(response: Response):
+#    result = func.coupon_croll()
+#    return result
 
+@app.get(
+    "/weather/{city}/{units}",
+    summary="openweathermap",
+    description="This is Weather",
+)
+async def weather(city:str, units:str):
+    return func.get_weather(city, units)
 @app.get("/get_client")
 async def ip(request: Request, user_agent: Union[str, None] = Header(default=None)):
     client_host = request.client.host
@@ -80,5 +87,4 @@ async def ip(request: Request, user_agent: Union[str, None] = Header(default=Non
 
 if __name__ == "__main__":
     import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, workers=16)
