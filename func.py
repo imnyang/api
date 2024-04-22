@@ -1,5 +1,6 @@
 from datetime import datetime
 from pytz import timezone, all_timezones
+from pycomcigan import get_school_code
 from dotenv import load_dotenv
 import os
 import requests

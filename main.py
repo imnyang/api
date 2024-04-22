@@ -8,6 +8,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from pycomcigan import get_school_code
+
 import func
 import requests
 import httpx
@@ -67,11 +69,10 @@ async def weather(city:str, units:str):
 
 @app.post("/website/send")
 async def send(request: Request, message:str):
-    data = {
+    result = requests.post("https://discord.com/api/webhooks/1224283449427497011/U5EnBi0FZ9UB1c6fc-Je1vdgCj8mvRqJLWUZjN588_qxegggpIDTWG4ciiMNyayR1R6K", json = {
         "content" : message,
         "username" : request.client.host
-    }
-    result = requests.post("https://discord.com/api/webhooks/1224283449427497011/U5EnBi0FZ9UB1c6fc-Je1vdgCj8mvRqJLWUZjN588_qxegggpIDTWG4ciiMNyayR1R6K", json = data)
+    })
     try:
         result.raise_for_status()
     except requests.exceptions.HTTPError as err:
@@ -85,6 +86,18 @@ async def send(request: Request, message:str):
 async def ip(request: Request, user_agent: Union[str, None] = Header(default=None)):
     client_host = request.client.host
     return {"success":True, "ip": client_host, "user_agent": user_agent}
+
+
+
+@app.get("/timetable/get/{school}/{grade}/{class_int}/{next}")
+async def timetable_get(school:str, grade:int, class_int:int, next:int):
+    return {"state": "Remaking"}
+
+@app.get("/timetable/get/{school}")
+async def timetable_search(school:str):
+    return get_school_code(school)
+
+
 
 #@app.get("/room")
 #async def room():
