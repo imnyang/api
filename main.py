@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 import func
+import requests
 import httpx
 
 app = FastAPI(
@@ -55,14 +56,6 @@ async def time(continent:str, country:str, response: Response):
         return result
     return result
 
-#@app.get(
-#    "/cookie/coupon",
-#    description="i need Cookie Run: Kingdom Coupon Code",
-#    status_code=200
-#)
-#async def cookie_coupon(response: Response):
-#    result = func.coupon_croll()
-#    return result
 
 @app.get(
     "/weather/{city}/{units}",
@@ -71,6 +64,23 @@ async def time(continent:str, country:str, response: Response):
 )
 async def weather(city:str, units:str):
     return func.get_weather(city, units)
+
+@app.post("/send")
+async def send(request: Request, message:str):
+    data = {
+        "content" : message,
+        "username" : request.client.host
+    }
+    result = requests.post("https://discord.com/api/webhooks/1224283449427497011/U5EnBi0FZ9UB1c6fc-Je1vdgCj8mvRqJLWUZjN588_qxegggpIDTWG4ciiMNyayR1R6K", json = data)
+    try:
+        result.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        return {"success": False, "error": err}
+
+    else:
+        return {"success": True}
+
+
 @app.get("/get_client")
 async def ip(request: Request, user_agent: Union[str, None] = Header(default=None)):
     client_host = request.client.host
