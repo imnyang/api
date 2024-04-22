@@ -93,7 +93,7 @@ async def ip(request: Request, user_agent: Union[str, None] = Header(default=Non
 async def timetable_get(school:str, grade:int, class_int:int, next:int):
     return {"state": "Remaking"}
 
-@app.get("/timetable/get/{school}")
+@app.get("/timetable/search/{school}")
 async def timetable_search(school:str):
     return get_school_code(school)
 
