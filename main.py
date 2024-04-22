@@ -65,7 +65,7 @@ async def time(continent:str, country:str, response: Response):
 async def weather(city:str, units:str):
     return func.get_weather(city, units)
 
-@app.post("/send")
+@app.post("/website/send")
 async def send(request: Request, message:str):
     data = {
         "content" : message,
