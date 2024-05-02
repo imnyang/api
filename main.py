@@ -52,12 +52,12 @@ async def root(request: Request):
     return templates.TemplateResponse("index.html",{"request":request})
 
 @app.get(
-    "/time/{continent}/{country}",
+    "/time/{where}",
     description="What time is now?\n/time/Asia/Seoul",
     status_code=200
 )
-async def time(continent:str, country:str, response: Response):
-    result = func.now(f"{continent}/{country}")
+async def time(where:str, response: Response):
+    result = func.now(f"{where}")
     if result["success"] == False:
         return result
     return result
@@ -91,6 +91,30 @@ async def ip(request: Request, user_agent: Union[str, None] = Header(default=Non
     client_host = request.client.host
     return {"success":True, "ip": client_host, "user_agent": user_agent}
 
+@app.get("/neis/search/{school}")
+async def search_school(school:str):
+    url = f'https://open.neis.go.kr/hub/schoolInfo?Type=json&SCHUL_NM={school}'
+
+    # GET 요청을 보내고 응답을 받음
+    response = requests.get(url)
+
+    # 응답이 성공적이면 JSON 데이터를 추출
+    if response.status_code == 200:
+        data = response.json()
+
+        # 학교 이름을 추출
+        school_names = []
+
+        # JSON 데이터에서 학교 이름 추출
+        for item in data.get('schoolInfo', [])[1].get('row', []):
+            school_name = item.get('SCHUL_NM', '')
+            if school_name:
+                school_names.append(school_name)
+
+        # 학교 이름 리스트를 출력
+        return {"success": True, "school_names": school_names}
+    else:
+        return {"success": False, "error": response.text}
 
 
 @app.get("/timetable/get/{school}/{grade}/{class_int}/{next}")
