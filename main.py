@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Header, HTTPException
+from fastapi import FastAPI, Header, HTTPException, File, UploadFile
 from typing import Union
 
 from fastapi import Request, Response, status
@@ -12,7 +12,11 @@ from pycomcigan import get_school_code
 
 import func
 import requests
+import os
 import httpx
+
+from dotenv import load_dotenv
+load_dotenv(verbose=True)
 
 app = FastAPI(
     title="api.imnyang.xyz",
@@ -97,7 +101,16 @@ async def timetable_get(school:str, grade:int, class_int:int, next:int):
 async def timetable_search(school:str):
     return get_school_code(school)
 
-
+@app.put("/deploy/web/{project}")
+async def deploy_web_project(file: UploadFile, project:str, api_key:str):
+    if api_key ==  os.getenv('SUPER_SECRET_TOKEN'):
+        with open(f"/var/www/{project}.zip", "wb") as f:
+            f.write(file.file.read())
+        os.system(f"unzip -o /var/www/{project}.zip -d /var/www/{project}")
+        return {"success": True}
+    else:
+        return {"success": False, "error": "이런거 하나 탈취하려니까 기분 좋아요?"}
+        # 으악 퍼리다
 
 #@app.get("/room")
 #async def room():
