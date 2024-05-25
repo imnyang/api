@@ -8,12 +8,10 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from pycomcigan import get_school_code
-
 import func
 import requests
 import os
-import httpx
+import aiofiles
 
 from dotenv import load_dotenv
 load_dotenv(verbose=True)
@@ -21,7 +19,7 @@ load_dotenv(verbose=True)
 app = FastAPI(
     title="api.imnyang.xyz",
     summary="imnyang's API",
-    version="0.1.0",
+    version="1.0.0",
     contact={
         "name": "💕",
         "url": "https://imnyang.xyz/about",
@@ -50,18 +48,6 @@ app.add_middleware(
 )
 async def root(request: Request):
     return templates.TemplateResponse("index.html",{"request":request})
-
-@app.get(
-    "/time/{where}",
-    description="What time is now?\n/time/Asia/Seoul",
-    status_code=200
-)
-async def time(where:str, response: Response):
-    result = func.now(f"{where}")
-    if result["success"] == False:
-        return result
-    return result
-
 
 @app.get(
     "/weather/{city}/{units}",
@@ -116,34 +102,17 @@ async def search_school(school:str):
     else:
         return {"success": False, "error": response.text}
 
+@app.put("/discord/save")
+async def save(file: UploadFile):
+    UPLOAD_DIR = os.environ.get("UPLOAD_DIR")
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    file_path = os.path.join(UPLOAD_DIR, file.filename)
+    async with aiofiles.open(file_path, 'wb') as out_file:
+        content = await file.read()
+        await out_file.write(content)
+    
+    return {"filename": file.filename, "file_size": len(content)}
 
-@app.get("/timetable/get/{school}/{grade}/{class_int}/{next}")
-async def timetable_get(school:str, grade:int, class_int:int, next:int):
-    return {"state": "Remaking"}
-
-@app.get("/timetable/search/{school}")
-async def timetable_search(school:str):
-    return get_school_code(school)
-
-@app.put("/deploy/web/{project}")
-async def deploy_web_project(file: UploadFile, project:str, api_key:str):
-    if api_key ==  os.getenv('SUPER_SECRET_TOKEN'):
-        with open(f"/var/www/{project}.zip", "wb") as f:
-            f.write(file.file.read())
-        os.system(f"unzip -o /var/www/{project}.zip -d /var/www/{project}")
-        return {"success": True}
-    else:
-        return {"success": False, "error": "이런거 하나 탈취하려니까 기분 좋아요?"}
-        # 으악 퍼리다
-
-#@app.get("/room")
-#async def room():
-#    url = "http://192.168.0.12:8000/"
-#    async with httpx.AsyncClient() as client:
-#        response = await client.get(url)
-#        json_data = response.json()
-#
-#    return json_data
 
 if __name__ == "__main__":
     import uvicorn
