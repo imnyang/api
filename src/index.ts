@@ -2,6 +2,7 @@ import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import { Logestic } from 'logestic';
 import RSSParser from 'rss-parser';
+import cors from "@elysiajs/cors";
 
 const doc = {
   info: {
@@ -49,6 +50,12 @@ const app = new Elysia()
   
   .use(swagger({documentation: doc}))
   .use(Logestic.preset('fancy'))
+  .use(cors(
+    {
+      origin: '*',
+      methods: '*'
+    }
+  ))
   .listen(1108)
 ;
 
