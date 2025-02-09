@@ -20,7 +20,7 @@ const doc = {
   },
   servers: process.env.NODE_ENV === 'development' ? [
     {
-      url: 'http://localhost:3000',
+      url: 'http://localhost:1108',
       description: "Local server"
     },
     {
@@ -33,7 +33,7 @@ const doc = {
       description: "Production server"
     },
     {
-      url: 'http://localhost:3000',
+      url: 'http://localhost:1108',
       description: "Local server"
     }
   ]
@@ -49,7 +49,7 @@ const app = new Elysia()
   
   .use(swagger({documentation: doc}))
   .use(Logestic.preset('fancy'))
-  .listen(3000)
+  .listen(1108)
 ;
 
 console.log(
