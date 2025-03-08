@@ -47,17 +47,28 @@ const app = new Elysia()
     const feed = await parser.parseURL('https://blog.imnya.ng/rss.xml');
     return feed.items;
   })
-  
-  .use(swagger({documentation: doc}))
+  .get("/google/complete", async ({ query }) => {
+    const language = query.hl || 'en';
+    const keyword = query.q || '';
+    const url = `https://suggestqueries.google.com/complete/search?output=toolbar&hl=${language}&q=${keyword}`;
+    const response = await fetch(url);
+    const suggestions = await response.text();
+    return new Response(suggestions, {
+      headers: { 'Content-Type': 'application/xml' }
+    });
+  }, {
+    query: t.Object({
+      hl: t.String(),
+      q: t.String()
+    })
+  })
+  .use(swagger({ documentation: doc }))
   .use(Logestic.preset('fancy'))
-  .use(cors(
-    {
-      origin: '*',
-      methods: '*'
-    }
-  ))
-  .listen(1108)
-;
+  .use(cors({
+    origin: '*',
+    methods: '*'
+  }))
+  .listen(1108);
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
