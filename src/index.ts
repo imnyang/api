@@ -62,6 +62,18 @@ const app = new Elysia()
       q: t.String()
     })
   })
+  .get("/wakatime", async () => {
+    fetch("https://wakatime.com/api/v1/users/imnyang/stats/all_time")
+      .then((res) => res.json())
+      .then((json) => {
+        return json;
+      })
+      .catch((err) => {
+        console.error(err);
+        return err;
+      });
+  })
+
   .use(swagger({ documentation: doc }))
   .use(Logestic.preset('fancy'))
   .use(cors({
