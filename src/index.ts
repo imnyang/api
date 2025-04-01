@@ -21,21 +21,22 @@ const doc = {
   },
   servers: process.env.NODE_ENV === 'development' ? [
     {
-      url: 'http://localhost:1108',
-      description: "Local server"
-    },
-    {
       url: 'https://api.imnya.ng',
       description: "Production server"
+    },
+    {
+      url: 'http://localhost:1108',
+      description: "Local server"
     }
   ] : [
-    {
-      url: 'https://api.imnya.ng',
-      description: "Production server"
-    },
+
     {
       url: 'http://localhost:1108',
       description: "Local server"
+    },
+    {
+      url: 'https://api.imnya.ng',
+      description: "Production server"
     }
   ]
 };
@@ -63,17 +64,15 @@ const app = new Elysia()
     })
   })
   .get("/wakatime", async () => {
-    fetch("https://wakatime.com/api/v1/users/imnyang/stats/all_time")
-      .then((res) => res.json())
-      .then((json) => {
-        return json;
-      })
-      .catch((err) => {
-        console.error(err);
-        return err;
-      });
+    try {
+      const res = await fetch("https://wakatime.com/api/v1/users/imnyang/stats/all_time");
+      const json = await res.json();
+      return json;
+    } catch (err) {
+      console.error(err);
+      return { error: "Fetch failed" };
+    }
   })
-
   .use(swagger({ documentation: doc }))
   .use(Logestic.preset('fancy'))
   .use(cors({
