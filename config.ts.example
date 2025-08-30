@@ -1,0 +1,10 @@
+// All headers from your request are placed in this dictionary
+const discord_headers = {
+
+}
+
+// The request body is an empty JSON object
+const discord_payload = {
+
+}
+export {discord_headers, discord_payload};
