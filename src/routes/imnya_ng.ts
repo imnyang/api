@@ -37,8 +37,8 @@ const imnyang = new Elysia()
         }
     }))
 
-    .get("/discord_invite", () => {
-        return `https://discord.gg/${invite_link}`;
+    .get("/discord_invite", ({redirect}) => {
+        return redirect(`https://discord.gg/${invite_link}`);
     })
 
     .get("/rss", async () => {
